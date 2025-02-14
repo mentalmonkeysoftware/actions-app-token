@@ -23,7 +23,7 @@ class GitHubApp(GitHub):
         self.path = Path(pem_path)
         self.app_id = app_id
         if not self.path.is_file():
-            raise ValueError(f'argument: `pem_path` must be a valid filename. {pem_path} was not found.') 
+            raise ValueError(f'argument: `pem_path` must be a valid filename. {pem_path} was not found.')
         self.nwo = nwo
     
     def get_app(self):
@@ -34,7 +34,7 @@ class GitHubApp(GitHub):
         return client
     
     def get_installation(self, installation_id):
-        "login as app installation without requesting previously gathered data."
+        "Login as app installation without requesting previously gathered data."
         with open(self.path, 'rb') as key_file:
             client = GitHub()
             client.login_as_app_installation(private_key_pem=key_file.read(),
@@ -48,7 +48,7 @@ class GitHubApp(GitHub):
         return next(client.app_installations()).id
         
     def get_test_installation(self):
-        "login as app installation with the first installation_id retrieved."
+        "Login as app installation with the first installation_id retrieved."
         return self.get_installation(self.get_test_installation_id())
     
     def get_test_repo(self):
@@ -65,7 +65,7 @@ class GitHubApp(GitHub):
         """
         This is needed to retrieve the installation access token (for debugging). 
         
-        Useful for debugging purposes.  Must call .decode() on returned object to get string.
+        Useful for debugging purposes. Must call .decode() on returned object to get string.
         """
         now = self._now_int()
         payload = {
@@ -105,7 +105,7 @@ class GitHubApp(GitHub):
         return response.json()['token']
 
     def _extract(self, d, keys):
-        "extract selected keys from a dict."
+        "Extract selected keys from a dict."
         return dict((k, d[k]) for k in keys if k in d)
     
     def _now_int(self):
@@ -117,8 +117,8 @@ class GitHubApp(GitHub):
         Useful for testing and debugging.
         """
         url = 'https://api.github.com/installation/repositories'
-        headers={'Authorization': f'token {self.get_installation_access_token(installation_id)}',
-                 'Accept': 'application/vnd.github.machine-man-preview+json'}
+        headers = {'Authorization': f'token {self.get_installation_access_token(installation_id)}',
+                   'Accept': 'application/vnd.github.machine-man-preview+json'}
         
         response = requests.get(url=url, headers=headers)
         
@@ -127,7 +127,6 @@ class GitHubApp(GitHub):
         
         fields = ['name', 'full_name', 'id']
         return [self._extract(x, fields) for x in response.json()['repositories']]
-
 
     def generate_installation_curl(self, endpoint):
         iat = self.get_installation_access_token()
@@ -144,9 +143,16 @@ if __name__ == '__main__':
     assert nwo, "The environment variable GITHUB_REPOSITORY was not found."
 
     app = GitHubApp(pem_path=pem_path, app_id=app_id, nwo=nwo)
-    id = app.get_installation_id()
-    token = app.get_installation_access_token(installation_id=id)
+    installation_id = app.get_installation_id()
+    token = app.get_installation_access_token(installation_id=installation_id)
     assert token, 'Token not returned!'
 
+    # Mask the token to prevent accidental logging
     print(f"::add-mask::{token}")
-    print(f"::set-output name=app_token::{token}")
+
+    # Write the token to the GITHUB_OUTPUT file to set the output for GitHub Actions
+    github_output = os.environ.get('GITHUB_OUTPUT')
+    if not github_output:
+        raise EnvironmentError("GITHUB_OUTPUT is not set. Aborting to avoid exposing the token.")
+    with open(github_output, 'a') as output_file:
+        output_file.write(f"app_token={token}\n")

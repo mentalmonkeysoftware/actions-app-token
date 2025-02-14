@@ -25,7 +25,7 @@ Example:
 steps:
 - name: Get token
   id: get_token
-  uses: machine-learning-apps/actions-app-token@master
+  uses: mentalmonkeysoftware/actions-app-token@master
   with:
     APP_PEM: ${{ secrets.APP_PEM }}
     APP_ID: ${{ secrets.APP_ID }}

@@ -16,4 +16,4 @@ branding:
   icon: 'unlock'
 runs:
   using: 'docker'
-  image: 'docker://hamelsmu/app-token'
+  image: 'docker://mentalmonkeysoftware/app-token'
