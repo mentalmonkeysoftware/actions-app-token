@@ -13,7 +13,7 @@ RUN pip install --upgrade pip
 # Install the required Python packages (the build artifacts will be stored in /usr/local)
 RUN pip install \
     cryptography==43.0.1 \
-    github3.py==1.3.0 \
+    github3.py==4.0.1 \
     jwcrypto==1.5.6 \
     pyjwt==2.4.0
 
