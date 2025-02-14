@@ -10,8 +10,8 @@ jobs:
       - name: build-temp-container
         run: |
           echo ${PASSWORD} | docker login -u $USERNAME --password-stdin
-          docker build -t hamelsmu/app-token:temp -f prebuild.Dockerfile .
-          docker push hamelsmu/app-token:temp
+          docker build -t mentalmonkeysoftware/app-token:temp -f prebuild.Dockerfile .
+          docker push mentalmonkeysoftware/app-token:temp
         env:
           USERNAME: ${{ secrets.DOCKER_USERNAME }}
           PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
@@ -32,7 +32,7 @@ jobs:
     # tested with https://github.com/apps/fastpages-chatops
     - name: test
       id: test
-      uses: docker://hamelsmu/app-token:temp
+      uses: docker://mentalmonkeysoftware/app-token:temp
       env:
         INPUT_APP_PEM: ${{ secrets.APP_PEM }}
         INPUT_APP_ID: ${{ secrets.APP_ID }}
@@ -41,15 +41,15 @@ jobs:
       run: |
         cd $GITHUB_WORKSPACE
         echo ${PASSWORD} | docker login -u $USERNAME --password-stdin
-        docker build -t hamelsmu/app-token -f prebuild.Dockerfile .
-        docker push hamelsmu/app-token 
+        docker build -t mentalmonkeysoftware/app-token -f prebuild.Dockerfile .
+        docker push mentalmonkeysoftware/app-token 
       env:
         USERNAME: ${{ secrets.DOCKER_USERNAME }}
         PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
 
        # tested withhttps://github.com/apps/fastpages-chatops
     - name: final-test
-      uses: machine-learning-apps/actions-app-token@master
+      uses: mentalmonkeysoftware/actions-app-token@master
       with:
         APP_PEM: ${{ secrets.APP_PEM }}
         APP_ID: ${{ secrets.APP_ID }}
