@@ -1,7 +1,7 @@
 from collections import namedtuple, Counter
 from github3 import GitHub
 from pathlib import Path
-from cryptography.hazmat.backends import default_backend
+from cryptography.hazmat.primitives.serialization import load_pem_private_key
 import time
 import json
 import jwt
@@ -65,17 +65,19 @@ class GitHubApp(GitHub):
         """
         This is needed to retrieve the installation access token (for debugging). 
         
-        Useful for debugging purposes. Must call .decode() on returned object to get string.
+        Useful for debugging purposes.
         """
         now = self._now_int()
         payload = {
             "iat": now,
-            "exp": now + (60),
+            "exp": now + 60,
             "iss": self.app_id
         }
         with open(self.path, 'rb') as key_file:
-            private_key = default_backend().load_pem_private_key(key_file.read(), None)
-            return jwt.encode(payload, private_key, algorithm='RS256')
+            # Load the PEM private key using the new function.
+            private_key = load_pem_private_key(key_file.read(), password=None)
+            token = jwt.encode(payload, private_key, algorithm='RS256')
+            return token
     
     def get_installation_id(self):
         "https://developer.github.com/v3/apps/#find-repository-installation"
@@ -84,24 +86,32 @@ class GitHubApp(GitHub):
 
         url = f'https://api.github.com/repos/{owner}/{repo}/installation'
 
-        headers = {'Authorization': f'Bearer {self.get_jwt().decode()}',
+        # Ensure the JWT is a string (PyJWT may return bytes in some versions)
+        jwt_token = self.get_jwt()
+        if isinstance(jwt_token, bytes):
+            jwt_token = jwt_token.decode()
+            
+        headers = {'Authorization': f'Bearer {jwt_token}',
                    'Accept': 'application/vnd.github.machine-man-preview+json'}
         
         response = requests.get(url=url, headers=headers)
         if response.status_code != 200:
-            raise Exception(f'Status code : {response.status_code}, {response.json()}')
+            raise Exception(f'Status code: {response.status_code}, {response.json()}')
         return response.json()['id']
 
     def get_installation_access_token(self, installation_id):
         "Get the installation access token for debugging."
         
         url = f'https://api.github.com/app/installations/{installation_id}/access_tokens'
-        headers = {'Authorization': f'Bearer {self.get_jwt().decode()}',
+        jwt_token = self.get_jwt()
+        if isinstance(jwt_token, bytes):
+            jwt_token = jwt_token.decode()
+        headers = {'Authorization': f'Bearer {jwt_token}',
                    'Accept': 'application/vnd.github.machine-man-preview+json'}
         
         response = requests.post(url=url, headers=headers)
         if response.status_code != 201:
-            raise Exception(f'Status code : {response.status_code}, {response.json()}')
+            raise Exception(f'Status code: {response.status_code}, {response.json()}')
         return response.json()['token']
 
     def _extract(self, d, keys):
@@ -117,19 +127,20 @@ class GitHubApp(GitHub):
         Useful for testing and debugging.
         """
         url = 'https://api.github.com/installation/repositories'
-        headers = {'Authorization': f'token {self.get_installation_access_token(installation_id)}',
+        token = self.get_installation_access_token(installation_id)
+        headers = {'Authorization': f'token {token}',
                    'Accept': 'application/vnd.github.machine-man-preview+json'}
         
         response = requests.get(url=url, headers=headers)
         
         if response.status_code >= 400:
-            raise Exception(f'Status code : {response.status_code}, {response.json()}')
+            raise Exception(f'Status code: {response.status_code}, {response.json()}')
         
         fields = ['name', 'full_name', 'id']
         return [self._extract(x, fields) for x in response.json()['repositories']]
 
     def generate_installation_curl(self, endpoint):
-        iat = self.get_installation_access_token()
+        iat = self.get_installation_access_token(self.get_test_installation_id())
         print(f'curl -i -H "Authorization: token {iat}" -H "Accept: application/vnd.github.machine-man-preview+json" https://api.github.com{endpoint}')
 
 if __name__ == '__main__':
