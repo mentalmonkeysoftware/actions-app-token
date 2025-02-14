@@ -1,4 +1,4 @@
-FROM python:3.6-slim-stretch
+FROM python:3.14.0a5-slim
 
 RUN pip install \
     cryptography==2.6.1 \
