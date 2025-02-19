@@ -1,5 +1,7 @@
 name: Tests
-on: [push]
+on:
+  push:
+  workflow_dispatch:  # Now you can manually trigger this workflow from the Actions tab!
 
 jobs:
   build-temp-container:
