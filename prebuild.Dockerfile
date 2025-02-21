@@ -17,6 +17,8 @@ RUN pip install \
     jwcrypto==1.5.6 \
     pyjwt==2.4.0
 
+RUN pip install debugpy     
+
 # Final Stage: use a fresh minimal base image
 FROM python:3.14.0a5-slim
 
