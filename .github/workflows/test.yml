@@ -32,12 +32,12 @@ jobs:
     #     INPUT_APP_ID: ${{ secrets.APP_ID }}
 
     # tested with https://github.com/apps/fastpages-chatops
-    - name: test
-      id: test
-      uses: docker://mentalmonkeysoftware/app-token:temp
-      env:
-        INPUT_APP_PEM: ${{ secrets.APP_PEM }}
-        INPUT_APP_ID: ${{ secrets.APP_ID }}
+    # - name: test
+    #   id: test
+    #   uses: docker://mentalmonkeysoftware/app-token:temp
+    #   env:
+    #     INPUT_APP_PEM: ${{ secrets.APP_PEM }}
+    #     INPUT_APP_ID: ${{ secrets.APP_ID }}
 
     - name: pre-build action image
       run: |
