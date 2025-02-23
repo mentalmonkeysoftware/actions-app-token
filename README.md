@@ -47,7 +47,6 @@ cat your_app_key.pem | base64 -w 0 && echo
 ## Mandatory Inputs
 
 - `APP_PEM`: description: string version of your PEM file used to authenticate as a GitHub App. 
-
 - `APP_ID`: your GitHub App ID.
 
 ## Outputs
