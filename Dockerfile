@@ -12,7 +12,7 @@ RUN pip install --upgrade pip
 
 # Install the required Python packages (the build artifacts will be stored in /usr/local)
 RUN pip install \
-    cryptography==43.0.1 \
+    cryptography==44.0.1 \
     github3.py==4.0.1 \
     jwcrypto==1.5.6 \
     pyjwt==2.4.0
@@ -22,8 +22,20 @@ RUN pip install debugpy
 # Final Stage: use a fresh minimal base image
 FROM python:3.14.0a5-slim
 
+# Upgrade libtasn1 and gnutls28 to secure versions:
+#   - libtasn1 is fixed to 4.19.0-2+deb12u1 (CVE-2024-12133)
+#   - gnutls28 is fixed to 3.7.9-2+deb12u4 (CVE-2024-12243)
+RUN apt-get update && \
+    apt-get install -y libtasn1-6=4.19.0-2+deb12u1 gnutls28=3.7.9-2+deb12u4 && \
+    rm -rf /var/lib/apt/lists/*
+
+# Mitigation for CVE-2011-3389 (BEAST attack):
+# The BEAST attack exploits vulnerabilities in TLS 1.0 with CBC mode.
+# Our base image includes a modern OpenSSL that defaults to TLS 1.2/1.3,
+# so this vulnerability is already mitigated.
+# If needed, further enforce TLS 1.2+ via application configuration.
+
 # Copy the installed Python packages from the builder stage.
-# The installed packages reside in /usr/local (the default install location).
 COPY --from=builder /usr/local /usr/local
 
 # Copy your application code.
