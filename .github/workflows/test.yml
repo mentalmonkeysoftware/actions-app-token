@@ -39,15 +39,15 @@ jobs:
     #     INPUT_APP_PEM: ${{ secrets.APP_PEM }}
     #     INPUT_APP_ID: ${{ secrets.APP_ID }}
 
-    - name: pre-build action image
-      run: |
-        cd $GITHUB_WORKSPACE
-        echo ${PASSWORD} | docker login -u $USERNAME --password-stdin
-        docker build -t mentalmonkeysoftware/app-token -f Dockerfile .
-        docker push mentalmonkeysoftware/app-token 
-      env:
-        USERNAME: ${{ secrets.DOCKER_USERNAME }}
-        PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+    # - name: pre-build action image
+    #   run: |
+    #     cd $GITHUB_WORKSPACE
+    #     echo ${PASSWORD} | docker login -u $USERNAME --password-stdin
+    #     docker build -t mentalmonkeysoftware/app-token -f Dockerfile .
+    #     docker push mentalmonkeysoftware/app-token 
+    #   env:
+    #     USERNAME: ${{ secrets.DOCKER_USERNAME }}
+    #     PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
 
     #    # tested withhttps://github.com/apps/fastpages-chatops
     # - name: final-test
