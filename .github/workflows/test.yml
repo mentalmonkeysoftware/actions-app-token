@@ -12,7 +12,7 @@ jobs:
       - name: build-temp-container
         run: |
           echo ${PASSWORD} | docker login -u $USERNAME --password-stdin
-          docker build -t mentalmonkeysoftware/app-token:temp -f prebuild.Dockerfile .
+          docker build -t mentalmonkeysoftware/app-token:temp -f Dockerfile .
           docker push mentalmonkeysoftware/app-token:temp
         env:
           USERNAME: ${{ secrets.DOCKER_USERNAME }}
@@ -43,7 +43,7 @@ jobs:
       run: |
         cd $GITHUB_WORKSPACE
         echo ${PASSWORD} | docker login -u $USERNAME --password-stdin
-        docker build -t mentalmonkeysoftware/app-token -f prebuild.Dockerfile .
+        docker build -t mentalmonkeysoftware/app-token -f Dockerfile .
         docker push mentalmonkeysoftware/app-token 
       env:
         USERNAME: ${{ secrets.DOCKER_USERNAME }}
