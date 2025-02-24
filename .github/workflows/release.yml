@@ -32,3 +32,19 @@ jobs:
           files: |
             README.md
           tag_name: ${{ needs.release-please.outputs.tag_name }}
+
+      - name: docker-login
+        run: |
+          echo ${PASSWORD} | docker login -u $USERNAME --password-stdin
+        env:
+          USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          PASSWORD: ${{ secrets.DOCKER_PASSWORD }}            
+  
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: |
+            mentalmonkeysoftware/app-token:latest,
+            mentalmonkeysoftware/app-token:${{ needs.release-please.outputs.tag_name }}
