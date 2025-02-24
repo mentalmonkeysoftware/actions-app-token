@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.2](https://github.com/mentalmonkeysoftware/actions-app-token/compare/v1.0.1...v1.0.2) (2025-02-24)
+
+
+### Bug Fixes
+
+* remove push with no tag ([#12](https://github.com/mentalmonkeysoftware/actions-app-token/issues/12)) ([92f9a06](https://github.com/mentalmonkeysoftware/actions-app-token/commit/92f9a06853b279cdab3616ed3abf60d6e787a26b))
+
 ## [1.0.1](https://github.com/mentalmonkeysoftware/actions-app-token/compare/v1.0.1...v1.0.1) (2025-02-24)
 
 
