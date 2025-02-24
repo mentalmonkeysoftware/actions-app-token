@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.3](https://github.com/mentalmonkeysoftware/actions-app-token/compare/v1.0.2...v1.0.3) (2025-02-24)
+
+
+### Bug Fixes
+
+* fix cve ([#14](https://github.com/mentalmonkeysoftware/actions-app-token/issues/14)) ([052a0b2](https://github.com/mentalmonkeysoftware/actions-app-token/commit/052a0b26c4e52f8a556ad9de55a25d51d3c3e3b8))
+
 ## [1.0.2](https://github.com/mentalmonkeysoftware/actions-app-token/compare/v1.0.1...v1.0.2) (2025-02-24)
 
 
