@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.4](https://github.com/mentalmonkeysoftware/actions-app-token/compare/v1.0.3...v1.0.4) (2025-03-07)
+
+
+### Bug Fixes
+
+* use GITHUB_ENV ([d42a9ef](https://github.com/mentalmonkeysoftware/actions-app-token/commit/d42a9ef1a42cca070dc06302d1f5cb4e629c6c95))
+
 ## [1.0.3](https://github.com/mentalmonkeysoftware/actions-app-token/compare/v1.0.2...v1.0.3) (2025-02-24)
 
 
