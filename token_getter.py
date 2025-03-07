@@ -161,9 +161,10 @@ if __name__ == '__main__':
     # Mask the token to prevent accidental logging
     print(f"::add-mask::{token}")
 
-    # Write the token to the GITHUB_OUTPUT file to set the output for GitHub Actions
-    github_output = os.environ.get('GITHUB_OUTPUT')
-    if not github_output:
-        raise EnvironmentError("GITHUB_OUTPUT is not set. Aborting to avoid exposing the token.")
-    with open(github_output, 'a') as output_file:
-        output_file.write(f"app_token={token}\n")
+    # Write token to GITHUB_ENV so it's available to later steps
+    github_env = os.environ.get('GITHUB_ENV')
+    if github_env:
+        with open(github_env, 'a') as env_file:
+            env_file.write(f"APP_TOKEN={token}\n")
+    else:
+        print("⚠️ Warning: GITHUB_ENV is not set!")        
